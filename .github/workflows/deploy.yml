@@ -29,3 +29,5 @@ jobs:
           --tier=db-f1-micro \
           --region=us-central1 \
           --root-password=${{ secrets.MYSQL_ROOT_PASSWORD }}
+      - name: Verificar que el secreto está bien formateado
+        run: echo '${{ secrets.GCP_SA_KEY }}' | jq .
