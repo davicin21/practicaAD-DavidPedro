@@ -1,0 +1,31 @@
+name: Deploy MySQL on GCP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Create MySQL instance
+        run: |
+          gcloud sql instances create mysql-instance \
+          --database-version=MYSQL_8_0 \
+          --tier=db-f1-micro \
+          --region=us-central1 \
+          --root-password=${{ secrets.MYSQL_ROOT_PASSWORD }}
